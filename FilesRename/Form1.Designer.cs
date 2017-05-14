@@ -138,8 +138,8 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.closeFlagModifierBtn);
             this.splitContainer1.Panel2.Controls.Add(this.flagModifier);
+            this.splitContainer1.Panel2.Controls.Add(this.closeFlagModifierBtn);
             this.splitContainer1.Panel2.Controls.Add(this.ltv_dest);
             this.splitContainer1.Panel2.Controls.Add(this.tbx_pattern);
             this.splitContainer1.Size = new System.Drawing.Size(576, 354);
@@ -148,10 +148,10 @@
             // 
             // closeFlagModifierBtn
             // 
-            this.closeFlagModifierBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeFlagModifierBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.closeFlagModifierBtn.AutoSize = true;
             this.closeFlagModifierBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.closeFlagModifierBtn.Location = new System.Drawing.Point(266, 1);
+            this.closeFlagModifierBtn.Location = new System.Drawing.Point(257, 153);
             this.closeFlagModifierBtn.Name = "closeFlagModifierBtn";
             this.closeFlagModifierBtn.Size = new System.Drawing.Size(24, 23);
             this.closeFlagModifierBtn.TabIndex = 5;
@@ -164,17 +164,18 @@
             // 
             this.flagModifier.AllowUserToAddRows = false;
             this.flagModifier.AllowUserToDeleteRows = false;
-            this.flagModifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.flagModifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flagModifier.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.flagModifier.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Substitue,
             this.Modifier});
-            this.flagModifier.Location = new System.Drawing.Point(3, 29);
+            this.flagModifier.Location = new System.Drawing.Point(3, 185);
             this.flagModifier.Name = "flagModifier";
-            this.flagModifier.Size = new System.Drawing.Size(287, 168);
+            this.flagModifier.Size = new System.Drawing.Size(287, 169);
             this.flagModifier.TabIndex = 4;
             this.flagModifier.Visible = false;
+            this.flagModifier.CurrentCellChanged += new System.EventHandler(this.flagModifier_CurrentCellChanged);
             // 
             // Substitue
             // 

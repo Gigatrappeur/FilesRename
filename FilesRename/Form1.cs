@@ -20,10 +20,12 @@ namespace FilesRename
             InitializeComponent();
 
             this.ltv_source.ListViewItemSorter = new ListViewItemComparer();
-
+            
             this.current_location = "";
             this.tsl_search.Text = this.current_location;
             this.bindingFiles();
+            
+            this.tbx_pattern_TextChanged(null, null);
         }
 
         
@@ -68,6 +70,40 @@ namespace FilesRename
 
             this.replaceFilesName();
         }
+
+        private Match tmp;
+        private string ReplaceFlagEval(Match m)
+        {
+            string i = m.Value;
+            if (i.StartsWith("$"))
+                i = i.Substring(1);
+
+
+            int indice = int.Parse(i);
+            string value = tmp.Groups[indice].Value;
+
+            if (rows.ContainsKey(m.Value))
+            {
+                string modifierType = rows[m.Value].Cells[1].Value.ToString();
+                if (modifierType == "Majuscule")
+                    value = value.ToUpper();
+                else if (modifierType == "Minuscule")
+                    value = value.ToLower();
+            }
+
+
+            return value;
+            
+        }
+        private string ReplaceFlag(Regex r, string s)
+        {
+            string p = this.tbx_pattern.Text;
+            tmp = r.Match(s);
+
+            string rt = flagRegex.Replace(p, new MatchEvaluator(this.ReplaceFlagEval));
+            return rt;
+        }
+        
         
         private void replaceFilesName()
         {
@@ -81,9 +117,8 @@ namespace FilesRename
                 {
                     item.ForeColor = Color.Black;
 
-                    string newName = tmp.Replace(item.Text, this.tbx_pattern.Text);
-
-                    //MatchCollection colls = tmp.Matches(item.Text);
+                    //string newName = tmp.Replace(item.Text, this.tbx_pattern.Text);
+                    string newName = ReplaceFlag(tmp, item.Text);
                     
                     ListViewItem lvi = this.ltv_dest.Items.Add(newName);
                     lvi.Tag = item.Text;
@@ -154,18 +189,34 @@ namespace FilesRename
             this.ltv_dest.Columns[0].Width = this.ltv_dest.Width - 5;
         }
 
-        
+        private Dictionary<string, DataGridViewRow> rows = new Dictionary<string, DataGridViewRow>();
+        private Regex flagRegex = new Regex("\\$(?:[0-9]+|\\{[^}]+\\})");
         private void tbx_pattern_TextChanged(object sender, EventArgs e)
         {
-            Regex r = new Regex("\\$(?:[0-9]+|\\{[^}]+\\})");
-            MatchCollection items = r.Matches(this.tbx_pattern.Text);
-            
-            //this.stl_text.Text = "Nb: " + items.Count;
-            this.flagModifier.Rows.Clear();
-            foreach (Match item in items)
+            MatchCollection flagsToReplace = flagRegex.Matches(this.tbx_pattern.Text);
+
+            var content = new List<string>();
+            foreach (Match item in flagsToReplace)
             {
-                this.flagModifier.Rows.Add(new string[] { item.Value, "Aucune" });
+                content.Add(item.Value);
+
+                if (rows.ContainsKey(item.Value))
+                    continue;
+                
+                int indice = this.flagModifier.Rows.Add(new string[] { item.Value, "Aucune" });
+                rows.Add(item.Value, this.flagModifier.Rows[indice]);
             }
+
+            foreach (DataGridViewRow item in this.flagModifier.Rows)
+            {
+                var flag = item.Cells[0].Value.ToString();
+                if (content.Contains(flag))
+                    continue;
+
+                this.rows.Remove(flag);
+                this.flagModifier.Rows.Remove(item);
+            }
+            
             this.replaceFilesName();
         }
 
@@ -283,6 +334,12 @@ namespace FilesRename
         {
             this.flagModifier.Visible = false;
             this.closeFlagModifierBtn.Visible = false;
+        }
+
+        private void flagModifier_CurrentCellChanged(object sender, EventArgs e)
+        {
+            // TODO semble être déclenché trop souvent
+            this.replaceFilesName();
         }
     }
 
